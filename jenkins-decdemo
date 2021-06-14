@@ -1,6 +1,10 @@
 pipeline{
   agent any
   
+  environment{
+     PATH = "/opt/maven/bin:$PATH"
+	 }
+  
     satges{
 	
 	  stage("git Checkout"){
@@ -28,3 +32,4 @@ pipeline{
 		 }
 	  }
 	}
+}	
