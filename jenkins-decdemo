@@ -1,0 +1,30 @@
+pipeline{
+  agent any
+  
+    satges{
+	
+	  stage("git Checkout"){
+	    steps{git credentialsId: 'javahome1', url: 'https://github.com/vinayreddy9394/projct.git'
+	   
+	        }
+	   }
+	  stage("Maven Build"){
+	    steps{
+		  sh "mvn clean	package"
+		  sh "mv target/*.war target/myweb.war"
+		}
+	  } 
+	  stage("deploy-dev"){
+	     steps{
+		    sshagent(['tomcat-new']){
+			sh """
+			     scp -o StrictHostKeyChecking=no target/myweb.war root@ip-172-31-31-40: /root/apache-tomcat-8.5.66/webapps
+				 ssh root@ip-172-31-31-40 /root/apache-tomcat-8.5.66/bin/shutdown.sh
+				 ssh root@ip-172-31-31-40 /root/apache-tomcat-8.5.66/bin/startup.sh
+				 
+			"""	 
+				 
+			}
+		 }
+	  }
+	}
